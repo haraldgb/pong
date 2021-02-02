@@ -1,0 +1,19 @@
+pong_sprites.png
+size: 30, 80
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+ball
+  rotate: false
+  xy: 0, 0
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+paddle
+  rotate: false
+  xy: 20, 0
+  size: 10, 80
+  orig: 10, 80
+  offset: 0, 0
+  index: -1
