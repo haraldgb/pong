@@ -10,6 +10,7 @@ public class DesktopLauncher {
 		config.width = Pong.DESKTOP_START_WIDTH;
 		config.height = Pong.DESKTOP_START_HEIGHT;
 		config.title = Pong.TITLE;
+		config.forceExit = true;
 		new LwjglApplication(new Pong(), config);
 	}
 }

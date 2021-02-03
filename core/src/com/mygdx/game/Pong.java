@@ -1,3 +1,4 @@
+// Bytt til fra sprites til Textures? Lag klasse for paddles og ball, tror det er enklest...
 package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -5,52 +6,93 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 public class Pong extends ApplicationAdapter {
 	public final static int DESKTOP_START_WIDTH = 800;
-	public final static int DESKTOP_START_HEIGHT = 480;
+	public final static int DESKTOP_START_HEIGHT = 400;
 	public final static String TITLE = "PONG";
+	public static final int FREQUENCY = 60;
 
 	OrthographicCamera camera;
 	ExtendViewport viewport;
+	BitmapFont font;
 	SpriteBatch batch;
 	TextureAtlas textures;
-	Sprite paddle1;
-	Sprite paddle2;
-	Sprite ball;
+	Drawable[] gameParts;
 
+	int p1Score;
+	int p2Score;
+	Score score;
+
+	Paddle paddle1;
+	Paddle paddle2;
+	Ball ball;
+
+	float scale;
 	
 	@Override
 	public void create () {
 		camera = new OrthographicCamera();
-		viewport = new ExtendViewport(DESKTOP_START_WIDTH, DESKTOP_START_HEIGHT, camera);
+		viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
+		scale = Gdx.graphics.getHeight() / Pong.DESKTOP_START_HEIGHT;
 		Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
+		font = new BitmapFont();
 		batch = new SpriteBatch();
 		textures = new TextureAtlas("pong_sprites.txt");
-		paddle1 = textures.createSprite("paddle");
+
+		p1Score = 0;
+		p2Score = 0;
+
+		score = new Score(this);
+		paddle1 = new Paddle(batch, viewport, textures.createSprite("paddle"), 0, 0,0, false);
+		paddle2 = new Paddle(batch, viewport, textures.createSprite("paddle"), 1, DESKTOP_START_WIDTH - 10*scale,0, true);
+		ball =	new Ball(batch, viewport, textures.createSprite("ball"), DESKTOP_START_WIDTH/2 - 10*scale,DESKTOP_START_HEIGHT/2-40*scale, paddle1, paddle2);
+		ball.setScoreKeeper(score);
+		gameParts = new Drawable[]{paddle1, paddle2, ball};
 	}
 
 	@Override
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		paddle1.draw(batch);
+		update();
 		batch.end();
-	}
-	
-	@Override
-	public void dispose () {
-		batch.dispose();
-		textures.dispose();
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		viewport.update(width, height, true);
 		batch.setProjectionMatrix(camera.combined);
+	}
+
+	@Override
+	public void dispose () {
+		batch.dispose();
+		textures.dispose();
+	}
+
+	public void update() {
+		float delta = Gdx.graphics.getDeltaTime();
+		for (Drawable part : gameParts) {
+			part.update(delta);
+			part.draw();
+		}
+
+
+		font.draw(batch, String.format("%d", score.getP1Score()), viewport.getWorldWidth() / 2 - 100*scale, viewport.getWorldHeight() - 20*scale);
+		font.draw(batch, "|", viewport.getWorldWidth() / 2, viewport.getWorldHeight() - 20*scale);
+		font.getData().setScale(3*scale);
+		font.draw(batch, String.format("%d", score.getP2Score()), viewport.getWorldWidth() / 2 + 100*scale, viewport.getWorldHeight() - 20*scale);
+	}
+
+	public void endGame() {
+		System.out.println("Game over.");
+		Gdx.app.exit();
 	}
 }
