@@ -7,8 +7,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
 public class Ball implements Drawable {
-    public static final Vector2 START_VELOCITY = new Vector2(3, 3);
+    public static final Vector2 START_VELOCITY = new Vector2(4, 4);
     public static final float VELOCITY_MULTIPLIER = 1.5f;
+    public static int increaseDifficultyTime = 8;
     private SpriteBatch batch;
     private ExtendViewport viewport;
     private Vector2 velocity;
@@ -44,8 +45,8 @@ public class Ball implements Drawable {
     @Override
     public void update(float dt) {
         stateTime += dt;
-        if (stateTime > 15) {
-            velocity.scl(1.5f);
+        if (stateTime > increaseDifficultyTime) {
+            velocity.scl(VELOCITY_MULTIPLIER);
             stateTime = 0;
         }
         stepOnce(dt);

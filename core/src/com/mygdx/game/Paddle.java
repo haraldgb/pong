@@ -126,7 +126,7 @@ public class Paddle implements Drawable, ScoreObserver{
 
     @Override
     public void goal(int ps1, int ps2) {
-        if (this.idleAI && !Gdx.input.isTouched(fingerIndex)) {
+        if (!Gdx.input.isTouched(fingerIndex)) {
             float r = rand.nextFloat() * (viewport.getWorldHeight() - sprite.getHeight());
             sprite.setPosition(sprite.getX(), r);
             this.reverseDirection(false, true);

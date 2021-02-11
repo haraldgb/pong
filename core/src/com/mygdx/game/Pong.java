@@ -54,6 +54,7 @@ public class Pong extends ApplicationAdapter implements ScoreObserver{
 		paddle1 = new Paddle(batch, viewport, textures.createSprite("paddle"), 0, 0,0, false);
 		paddle2 = new Paddle(batch, viewport, textures.createSprite("paddle"), 1, DESKTOP_START_WIDTH - 10*scale,0, true);
 		score.addObserver(paddle2);
+		score.addObserver(paddle1);
 		ball =	new Ball(batch, viewport, textures.createSprite("ball"), paddle1, paddle2, score, DESKTOP_START_WIDTH/2 - 10*scale,DESKTOP_START_HEIGHT/2-40*scale);
 		gameParts = new Drawable[]{paddle1, paddle2, ball};
 	}
