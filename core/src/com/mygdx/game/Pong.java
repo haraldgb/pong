@@ -13,12 +13,12 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
-public class Pong extends ApplicationAdapter  {
+public class Pong extends ApplicationAdapter implements ScoreObserver{
 	public final static int DESKTOP_START_WIDTH = 800;
 	public final static int DESKTOP_START_HEIGHT = 400;
 	public final static String TITLE = "PONG";
 
-	public static int winScore = 2;
+	public static int winScore = 3;
 
 	OrthographicCamera camera;
 	ExtendViewport viewport;
@@ -48,11 +48,12 @@ public class Pong extends ApplicationAdapter  {
 		textures = new TextureAtlas("pong_sprites.txt");
 
 		score = Score.getInstance();
-		score.addGame(this);
+		score.addObserver(this);
 		p1Score = score.getP1Score();
 		p2Score = score.getP2Score();
 		paddle1 = new Paddle(batch, viewport, textures.createSprite("paddle"), 0, 0,0, false);
 		paddle2 = new Paddle(batch, viewport, textures.createSprite("paddle"), 1, DESKTOP_START_WIDTH - 10*scale,0, true);
+		score.addObserver(paddle2);
 		ball =	new Ball(batch, viewport, textures.createSprite("ball"), DESKTOP_START_WIDTH/2 - 10*scale,DESKTOP_START_HEIGHT/2-40*scale, paddle1, paddle2);
 		ball.setScoreKeeper(score);
 		gameParts = new Drawable[]{paddle1, paddle2, ball};

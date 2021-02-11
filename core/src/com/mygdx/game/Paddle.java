@@ -6,7 +6,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
-public class Paddle implements Drawable {
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
+public class Paddle implements Drawable, ScoreObserver{
     private SpriteBatch batch;
     private ExtendViewport viewport;
     private Vector2 velocity;
@@ -15,6 +18,7 @@ public class Paddle implements Drawable {
     int fingerIndex;
     boolean idleAI;
     float scale;
+    Random rand = new Random();
 
     public Paddle(SpriteBatch batch, ExtendViewport viewport, Sprite sprite, int inputIndex, float px, float py, boolean idleAI) {
         this.batch = batch;
@@ -115,6 +119,15 @@ public class Paddle implements Drawable {
             this.reverseDirection(false, true);
             stepOnce(dt);
         } else if (y + getHeight() >= viewport.getWorldHeight()) {
+            this.reverseDirection(false, true);
+        }
+    }
+
+    @Override
+    public void goal(int ps1, int ps2) {
+        if (this.idleAI && !Gdx.input.isTouched(fingerIndex)) {
+            float r = rand.nextFloat() * viewport.getWorldHeight();
+            sprite.setPosition(sprite.getX(), r);
             this.reverseDirection(false, true);
         }
     }
