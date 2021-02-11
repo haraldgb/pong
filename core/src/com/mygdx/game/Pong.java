@@ -13,11 +13,12 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
-public class Pong extends ApplicationAdapter {
+public class Pong extends ApplicationAdapter  {
 	public final static int DESKTOP_START_WIDTH = 800;
 	public final static int DESKTOP_START_HEIGHT = 400;
 	public final static String TITLE = "PONG";
-	public static final int FREQUENCY = 60;
+
+	public static int winScore = 2;
 
 	OrthographicCamera camera;
 	ExtendViewport viewport;
@@ -46,10 +47,10 @@ public class Pong extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		textures = new TextureAtlas("pong_sprites.txt");
 
-		p1Score = 0;
-		p2Score = 0;
-
-		score = new Score(this);
+		score = Score.getInstance();
+		score.addGame(this);
+		p1Score = score.getP1Score();
+		p2Score = score.getP2Score();
 		paddle1 = new Paddle(batch, viewport, textures.createSprite("paddle"), 0, 0,0, false);
 		paddle2 = new Paddle(batch, viewport, textures.createSprite("paddle"), 1, DESKTOP_START_WIDTH - 10*scale,0, true);
 		ball =	new Ball(batch, viewport, textures.createSprite("ball"), DESKTOP_START_WIDTH/2 - 10*scale,DESKTOP_START_HEIGHT/2-40*scale, paddle1, paddle2);
@@ -85,14 +86,22 @@ public class Pong extends ApplicationAdapter {
 		}
 
 
-		font.draw(batch, String.format("%d", score.getP1Score()), viewport.getWorldWidth() / 2 - 100*scale, viewport.getWorldHeight() - 20*scale);
+		font.draw(batch, String.format("%d", p1Score), viewport.getWorldWidth() / 2 - 100*scale, viewport.getWorldHeight() - 20*scale);
 		font.draw(batch, "|", viewport.getWorldWidth() / 2, viewport.getWorldHeight() - 20*scale);
 		font.getData().setScale(3*scale);
-		font.draw(batch, String.format("%d", score.getP2Score()), viewport.getWorldWidth() / 2 + 100*scale, viewport.getWorldHeight() - 20*scale);
+		font.draw(batch, String.format("%d", p2Score), viewport.getWorldWidth() / 2 + 100*scale, viewport.getWorldHeight() - 20*scale);
 	}
 
 	public void endGame() {
 		System.out.println("Game over.");
 		Gdx.app.exit();
+	}
+
+	public void goal(int p1s, int p2s) {
+		this.p1Score = p1s;
+		this.p2Score = p2s;
+		if (p1s >= winScore || p2s >= winScore) {
+			this.endGame();
+		}
 	}
 }
