@@ -18,7 +18,7 @@ public class Pong extends ApplicationAdapter implements ScoreObserver{
 	public final static int DESKTOP_START_HEIGHT = 400;
 	public final static String TITLE = "PONG";
 
-	public static int winScore = 3;
+	public static int winScore = 21;
 
 	OrthographicCamera camera;
 	ExtendViewport viewport;
@@ -54,8 +54,7 @@ public class Pong extends ApplicationAdapter implements ScoreObserver{
 		paddle1 = new Paddle(batch, viewport, textures.createSprite("paddle"), 0, 0,0, false);
 		paddle2 = new Paddle(batch, viewport, textures.createSprite("paddle"), 1, DESKTOP_START_WIDTH - 10*scale,0, true);
 		score.addObserver(paddle2);
-		ball =	new Ball(batch, viewport, textures.createSprite("ball"), DESKTOP_START_WIDTH/2 - 10*scale,DESKTOP_START_HEIGHT/2-40*scale, paddle1, paddle2);
-		ball.setScoreKeeper(score);
+		ball =	new Ball(batch, viewport, textures.createSprite("ball"), paddle1, paddle2, score, DESKTOP_START_WIDTH/2 - 10*scale,DESKTOP_START_HEIGHT/2-40*scale);
 		gameParts = new Drawable[]{paddle1, paddle2, ball};
 	}
 

@@ -60,6 +60,7 @@ public class Paddle implements Drawable, ScoreObserver{
         }
     }
 
+    @Override
     public void stepOnce(float dt) {
         if (Gdx.input.isTouched(fingerIndex)) {
             float inputX = viewport.getWorldHeight() - Gdx.input.getY(fingerIndex);
@@ -93,24 +94,24 @@ public class Paddle implements Drawable, ScoreObserver{
         }
     }
 
+    @Override
+    public float getX() {
+        return sprite.getX();
+    }
+
+    @Override
     public float getWidth() {
         return sprite.getWidth() * scale;
     }
 
+    @Override
     public float getHeight() {
         return sprite.getHeight() * scale;
     }
 
+    @Override
     public float getY() {
         return sprite.getY();
-    }
-
-    public float getTop() {
-        return sprite.getY() + getHeight();
-    }
-
-    public void stopPaddle() {
-        velocity.set(0,0);
     }
 
     private void bounceOffWalls(float dt) {
@@ -126,7 +127,7 @@ public class Paddle implements Drawable, ScoreObserver{
     @Override
     public void goal(int ps1, int ps2) {
         if (this.idleAI && !Gdx.input.isTouched(fingerIndex)) {
-            float r = rand.nextFloat() * viewport.getWorldHeight();
+            float r = rand.nextFloat() * (viewport.getWorldHeight() - sprite.getHeight());
             sprite.setPosition(sprite.getX(), r);
             this.reverseDirection(false, true);
         }

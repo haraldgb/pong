@@ -21,7 +21,7 @@ public class Ball implements Drawable {
     private boolean velChanged = true;
     float scale;
 
-    public Ball(SpriteBatch batch, ExtendViewport viewport, Sprite sprite, float px, float py, Paddle leftPaddle, Paddle rightPaddle) {
+    public Ball(SpriteBatch batch, ExtendViewport viewport, Sprite sprite, Paddle leftPaddle, Paddle rightPaddle, Score score, float px, float py) {
         this.batch = batch;
         this.viewport = viewport;
         scale = Gdx.graphics.getHeight() / Pong.DESKTOP_START_HEIGHT;
@@ -30,6 +30,7 @@ public class Ball implements Drawable {
         sprite.setScale(scale);
         this.leftPaddle = leftPaddle;
         this.rightPaddle = rightPaddle;
+        scoreKeeper = score;
         velocity = new Vector2(START_VELOCITY);
         velocity.scl(frequency * scale);
         stateTime = 0;
@@ -82,9 +83,8 @@ public class Ball implements Drawable {
         float x = sprite.getX();
         if (x <= leftPaddle.getWidth()) {
             float centerHeight = sprite.getY() + getHeight()/2;
-            if (centerHeight >= leftPaddle.getY() && centerHeight <= leftPaddle.getTop()) {
-                if ( x < leftPaddle.getWidth() + velocity.x) {
-                    leftPaddle.stopPaddle();
+            if (centerHeight >= leftPaddle.getY() && centerHeight <= leftPaddle.getY() + leftPaddle.getHeight()) {
+                if ( x < leftPaddle.getWidth() + velocity.x * dt) {
                     reverseDirection(false, true);
                 } else {
                     reverseDirection(true, false);
@@ -93,9 +93,8 @@ public class Ball implements Drawable {
             }
         } else if (x + getWidth() >= viewport.getWorldWidth() - rightPaddle.getWidth()) {
             float centerHeight = sprite.getY() + getHeight()/2;
-            if (centerHeight >= rightPaddle.getY() && centerHeight <= rightPaddle.getTop()) {
-                if (x > viewport.getWorldWidth() - rightPaddle.getWidth() + velocity.x) {
-                    rightPaddle.stopPaddle();
+            if (centerHeight >= rightPaddle.getY() && centerHeight <= rightPaddle.getY() + rightPaddle.getHeight()) {
+                if (x > viewport.getWorldWidth() - rightPaddle.getWidth() + velocity.x * dt) {
                     reverseDirection(false, true);
                 } else {
                     reverseDirection(true, false);
@@ -132,20 +131,29 @@ public class Ball implements Drawable {
         sprite.setPosition((viewport.getWorldWidth() - getWidth()) / 2, (viewport.getWorldHeight() - getHeight()) / 2);
     }
 
+    @Override
     public void stepOnce(float dt) {
         velocity.scl(dt);
         sprite.setPosition(sprite.getX() + velocity.x, sprite.getY() + velocity.y);
         velocity.scl(1/dt);
     }
 
-    public void setScoreKeeper(Score score) {
-        this.scoreKeeper = score;
+    @Override
+    public float getX() {
+        return sprite.getX();
     }
 
+    @Override
+    public float getY() {
+        return sprite.getY();
+    }
+
+    @Override
     public float getWidth() {
         return sprite.getWidth() * scale;
     }
 
+    @Override
     public float getHeight() {
         return sprite.getHeight() * scale;
     }
